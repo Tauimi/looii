@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="order-detail">
+    <h2>Заказ #{{ order.id }}</h2>
+    <div class="order-info">
+        <p><strong>Дата заказа:</strong> {{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+        <p><strong>Статус:</strong> {{ order.status }}</p>
+        <p><strong>Сумма заказа:</strong> {{ order.total_amount }} ₽</p>
+    </div>
+
+    <div class="order-items">
+        <h3>Товары в заказе</h3>
+        <div class="items-list">
+            {% for item in order.items %}
+            <div class="order-item">
+                <div class="item-image">
+                    <img src="{{ url_for('static', filename='images/' + item.product.image) }}" alt="{{ item.product.name }}">
+                </div>
+                <div class="item-info">
+                    <h4>{{ item.product.name }}</h4>
+                    <p class="item-price">{{ item.price }} ₽</p>
+                    <p class="item-quantity">Количество: {{ item.quantity }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="order-address">
+        <h3>Адрес доставки</h3>
+        <p>{{ order.address }}</p>
+    </div>
+</div>
+
+<style>
+.order-detail {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.order-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.order-items {
+    margin-bottom: 20px;
+}
+
+.items-list {
+    display: grid;
+    gap: 20px;
+}
+
+.order-item {
+    display: flex;
+    gap: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.item-image img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-info h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.item-price {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.item-quantity {
+    color: #666;
+    margin: 5px 0;
+}
+
+.order-address {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+</style>
+{% endblock %} 

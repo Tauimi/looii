@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ТехноМаркет - магазин электроники и бытовой техники. Большой выбор товаров по низким ценам!">
+    <meta name="keywords" content="электроника, бытовая техника, смартфоны, ноутбуки, телевизоры, холодильники, стиральные машины">
+    <title>{{ title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cart_notification.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Мгновенное применение настроек темы и доступности -->
+    <script>
+        (function() {
+            // Функция вызывается до загрузки DOM для быстрого применения настроек
+            try {
+                // Получаем настройки из localStorage
+                var settingsInitialized = localStorage.getItem('settings-initialized');
+                var darkTheme = localStorage.getItem('dark-theme') === 'true';
+                var easyReadingMode = localStorage.getItem('easy-reading-mode') === 'true';
+                
+                // Если настройки еще не инициализированы, устанавливаем значения по умолчанию
+                if (!settingsInitialized) {
+                    console.log('Первое посещение: устанавливаем настройки по умолчанию');
+                    localStorage.setItem('dark-theme', 'false');
+                    localStorage.setItem('easy-reading-mode', 'false');
+                    localStorage.setItem('settings-initialized', 'true');
+                    darkTheme = false;
+                    easyReadingMode = false;
+                } else {
+                    console.log('Применение сохраненных настроек');
+                }
+                
+                // Применяем настройки темной темы
+                if (darkTheme) {
+                    document.documentElement.classList.add('dark-theme');
+                } else {
+                    document.documentElement.classList.remove('dark-theme');
+                }
+                
+                // Применяем настройки режима для слабовидящих
+                if (easyReadingMode) {
+                    document.documentElement.classList.add('large-font', 'high-contrast');
+                    document.documentElement.style.fontSize = '150%';
+                } else {
+                    document.documentElement.classList.remove('large-font', 'high-contrast');
+                    document.documentElement.style.fontSize = '';
+                }
+                
+                // Добавляем обработчик для применения классов к body после загрузки DOM
+                window.addEventListener('DOMContentLoaded', function() {
+                    // Добавляем классы к body для согласованности
+                    if (darkTheme) {
+                        document.body.classList.add('dark-theme');
+                    } else {
+                        document.body.classList.remove('dark-theme');
+                    }
+                    
+                    if (easyReadingMode) {
+                        document.body.classList.add('large-font', 'high-contrast');
+                    } else {
+                        document.body.classList.remove('large-font', 'high-contrast');
+                    }
+                    
+                    // Для режима слабовидящих делаем принудительную перерисовку
+                    if (easyReadingMode) {
+                        document.body.style.display = 'none';
+                        setTimeout(function() {
+                            document.body.style.display = '';
+                        }, 10);
+                    }
+                });
+            } catch (e) {
+                console.error('Ошибка при применении настроек:', e);
+            }
+        })();
+    </script>
+</head>
+<body class="default-theme">
+    {% include 'header.html' %}
+    
+    <!-- Основное содержимое -->
+    <main class="container">
+        <!-- Вывод флеш-сообщений -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    {% include 'footer.html' %}
+    
+    <script src="{{ url_for('static', filename='js/accessibility.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/cart_indicator.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/clear_flash_messages.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/cart_handler.js') }}" defer></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

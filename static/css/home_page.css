@@ -1,0 +1,66 @@
+/* Стили для индикаторов наличия товаров на главной странице */
+.stock-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.stock-high {
+    background-color: #4CAF50;
+}
+
+.stock-low {
+    background-color: #FF9800;
+}
+
+.stock-none {
+    background-color: #F44336;
+}
+
+/* Стили для карточек товаров на главной странице */
+.product-card {
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.product-image {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Стили для кнопок "В корзину" */
+button.add-to-cart:disabled {
+    background-color: #e0e0e0;
+    color: #9e9e9e;
+    cursor: not-allowed;
+    border: 1px solid #cccccc;
+}
+
+/* Анимация появления товаров */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 

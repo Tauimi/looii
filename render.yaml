@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: tehnomarket
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:application
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tehnomarket-db
+          property: connectionString
+      - key: PYTHONUNBUFFERED
+        value: "true"
+      - key: PYTHONPATH
+        value: "/opt/render/project/src"
+
+databases:
+  - name: tehnomarket-db
+    plan: free
+    postgresMajorVersion: 14 

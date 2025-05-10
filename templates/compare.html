@@ -1,0 +1,177 @@
+{% extends 'layout.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common_stock.css') }}">
+<style>
+    .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: white;
+        box-shadow: var(--box-shadow);
+    }
+    
+    .compare-table th,
+    .compare-table td {
+        padding: 15px;
+        border: 1px solid #eee;
+        text-align: left;
+    }
+    
+    .compare-table th {
+        background: #f8f9fa;
+        font-weight: bold;
+    }
+    
+    .compare-table tr:hover {
+        background: #f8f9fa;
+    }
+    
+    .product-cell {
+        width: 200px;
+    }
+    
+    .product-image {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+    
+    .product-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .product-price {
+        color: var(--primary-color);
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .remove-compare {
+        background: none;
+        border: none;
+        color: #dc3545;
+        cursor: pointer;
+        padding: 5px;
+        font-size: 16px;
+    }
+    
+    .remove-compare:hover {
+        color: #c82333;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: var(--box-shadow);
+    }
+    
+    .empty-state-icon {
+        font-size: 48px;
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+    
+    .empty-state h2 {
+        margin-bottom: 15px;
+        color: #343a40;
+    }
+    
+    .empty-state p {
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+    
+    .btn:hover {
+        background: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Сравнение товаров</h1>
+    </div>
+    
+    {% if compare_products %}
+    <div class="compare-container">
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th>Характеристика</th>
+                    {% for product in compare_products %}
+                    <th class="product-cell">
+                        <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="product-image">
+                        <div class="product-title">{{ product.name }}</div>
+                        <div class="product-price">{{ product.price }} ₽</div>
+                        <button type="button" class="remove-compare" data-product-id="{{ product.id }}" aria-label="Удалить из сравнения" title="Удалить из сравнения">
+                            <i class="fas fa-times"></i> Удалить
+                        </button>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Описание</th>
+                    {% for product in compare_products %}
+                    <td>{{ product.description }}</td>
+                    {% endfor %}
+                </tr>
+                {% if compare_products[0].specifications %}
+                {% for key in compare_products[0].specifications.keys() %}
+                <tr>
+                    <th>{{ key }}</th>
+                    {% for product in compare_products %}
+                    <td>{{ product.specifications.get(key, '-') }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                {% endif %}
+                <tr>
+                    <th>Наличие</th>
+                    {% for product in compare_products %}
+                    <td>
+                        {% if product.stock > 5 %}
+                            В наличии
+                        {% elif product.stock > 0 %}
+                            Осталось {{ product.stock }} шт.
+                        {% else %}
+                            Нет в наличии
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="fas fa-balance-scale"></i>
+        </div>
+        <h2>Нет товаров для сравнения</h2>
+        <p>Добавляйте товары для сравнения, чтобы выбрать лучший вариант.</p>
+        <a href="{{ url_for('shop.catalog') }}" class="btn">Перейти в каталог</a>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/product.js') }}"></script>
+{% endblock %} 

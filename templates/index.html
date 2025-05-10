@@ -1,0 +1,145 @@
+{% extends 'layout.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/carousel.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common_stock.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home_page.css') }}">
+{% endblock %}
+
+{% block content %}
+    <!-- Карусель (слайдер) -->
+    <div class="carousel">
+        <div class="carousel-slide">
+            <!-- Слайд 1 -->
+            <div class="carousel-item">
+                <img src="{{ url_for('shop.get_carousel_image', slide_id=1) }}" alt="Новинки электроники">
+                <div class="carousel-content">
+                    <h2>Новинки электроники 2023</h2>
+                    <p>Исследуйте последние технологические инновации в нашем каталоге</p>
+                    <a href="{{ url_for('shop.catalog') }}" class="carousel-btn">Смотреть новинки</a>
+                </div>
+            </div>
+            
+            <!-- Слайд 2 -->
+            <div class="carousel-item">
+                <img src="{{ url_for('shop.get_carousel_image', slide_id=2) }}" alt="Скидки на смартфоны">
+                <div class="carousel-content">
+                    <h2>Скидки до 30% на смартфоны</h2>
+                    <p>Только в этом месяце! Успейте приобрести современные смартфоны по выгодным ценам</p>
+                    <a href="{{ url_for('shop.category', category_id=1) }}" class="carousel-btn">К смартфонам</a>
+                </div>
+            </div>
+            
+            <!-- Слайд 3 -->
+            <div class="carousel-item">
+                <img src="{{ url_for('shop.get_carousel_image', slide_id=3) }}" alt="Техника для дома">
+                <div class="carousel-content">
+                    <h2>Техника для комфортного дома</h2>
+                    <p>Бытовая техника от ведущих производителей с бесплатной доставкой</p>
+                    <a href="{{ url_for('static_pages.delivery') }}" class="carousel-btn">Условия доставки</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Кнопки навигации -->
+        <div class="carousel-nav">
+            <button class="carousel-prev" aria-label="Предыдущий слайд" title="Предыдущий слайд"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-next" aria-label="Следующий слайд" title="Следующий слайд"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
+        <!-- Точки навигации -->
+        <div class="carousel-dots"></div>
+    </div>
+    
+    <!-- Рекламный баннер -->
+    <div class="banner">
+        <div class="banner-content">
+            <h2>Новые поступления электроники</h2>
+            <p>Успейте приобрести технику по выгодным ценам!</p>
+            <a href="{{ url_for('shop.catalog') }}" class="btn">Смотреть каталог</a>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <!-- Боковая панель -->
+        <aside class="sidebar">
+            <!-- Категории -->
+            <div class="categories">
+                <h3>Категории</h3>
+                <ul class="category-list">
+                    {% for category in categories %}
+                    <li>
+                        <a href="{{ url_for('shop.category', category_id=category.id) }}">{{ category.name }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <!-- Счетчик посещений -->
+            <div class="visitor-counter">
+                <h3>Посетителей сегодня</h3>
+                <div class="count" id="visitor-count">0</div>
+            </div>
+        </aside>
+        
+        <!-- Основной контент -->
+        <div class="content">
+            <h2>Популярные товары</h2>
+            <div class="products">
+                {% for product in products %}
+                <div class="product-card animate-fade-in">
+                    <div class="product-image">
+                        <a href="{{ url_for('shop.product', product_id=product.id) }}">
+                            <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="thumbnail" data-full-image="{{ url_for('static', filename='images/' + product.image) }}">
+                        </a>
+                        
+                        <!-- Индикатор наличия товара -->
+                        <div class="stock-badge {% if product.stock > 5 %}stock-high{% elif product.stock > 0 %}stock-low{% else %}stock-none{% endif %}">
+                            {% if product.stock > 5 %}
+                                В наличии
+                            {% elif product.stock > 0 %}
+                                Осталось {{ product.stock }} шт.
+                            {% else %}
+                                Нет в наличии
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">
+                            <a href="{{ url_for('shop.product', product_id=product.id) }}">{{ product.name }}</a>
+                        </div>
+                        <div class="product-price">{{ product.price }} ₽</div>
+                        <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="post" class="ajax-add-to-cart" data-product-id="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="add-to-cart" {% if product.stock <= 0 %}disabled{% endif %}>
+                                {% if product.stock > 0 %}
+                                    В корзину
+                                {% else %}
+                                    Нет в наличии
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="about-section">
+                <h2>О нашем магазине</h2>
+                <p>ТехноМаркет — ваш надежный партнер в мире современной электроники и бытовой техники. Мы предлагаем широкий ассортимент товаров от ведущих мировых производителей по конкурентоспособным ценам.</p>
+                <p>Наши преимущества:</p>
+                <ul>
+                    <li>Гарантия на всю продукцию</li>
+                    <li>Быстрая доставка по всей России</li>
+                    <li>Профессиональная консультация</li>
+                    <li>Лучшие цены и регулярные акции</li>
+                </ul>
+                <a href="{{ url_for('static_pages.about') }}" class="btn">Подробнее о нас</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/carousel.js') }}"></script>
+{% endblock %} 

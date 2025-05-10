@@ -1,0 +1,196 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="visitor-stats">
+    <h3>Статистика посещений</h3>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-value">{{ visitor_stats.total }}</div>
+            <div class="stat-label">Всего уникальных посетителей</div>
+        </div>
+    </div>
+</div>
+
+<div class="popular-products">
+    <h2>Популярные товары</h2>
+    <div class="products">
+        {% for product in popular_products %}
+        <div class="product-card animate-fade-in">
+            <div class="product-image">
+                <a href="{{ url_for('shop.product', product_id=product.id) }}">
+                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="thumbnail">
+                </a>
+                
+                <div class="stock-badge {% if product.stock > 5 %}stock-high{% elif product.stock > 0 %}stock-low{% else %}stock-none{% endif %}">
+                    {% if product.stock > 5 %}
+                        В наличии
+                    {% elif product.stock > 0 %}
+                        Осталось {{ product.stock }} шт.
+                    {% else %}
+                        Нет в наличии
+                    {% endif %}
+                </div>
+            </div>
+            <div class="product-info">
+                <div class="product-title">
+                    <a href="{{ url_for('shop.product', product_id=product.id) }}">{{ product.name }}</a>
+                </div>
+                <div class="product-price">{{ product.price }} ₽</div>
+                <div class="product-actions">
+                    <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="post" class="ajax-add-to-cart" data-product-id="{{ product.id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="add-to-cart" {% if product.stock <= 0 %}disabled{% endif %}>
+                            {% if product.stock > 0 %}
+                                В корзину
+                            {% else %}
+                                Нет в наличии
+                            {% endif %}
+                        </button>
+                    </form>
+                    <div class="additional-actions">
+                        <button class="action-button favorite-button" data-product-id="{{ product.id }}" title="Добавить в избранное">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button class="action-button compare-button" data-product-id="{{ product.id }}" title="Добавить к сравнению">
+                            <i class="fas fa-balance-scale"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.visitor-stats {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 30px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.additional-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.action-button {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.action-button:hover {
+    color: var(--primary-color);
+}
+
+.action-button.active {
+    color: var(--primary-color);
+}
+
+.favorite-button.active i {
+    color: #e74c3c;
+}
+
+.compare-button.active i {
+    color: #3498db;
+}
+</style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработка кнопки избранного
+    document.querySelectorAll('.favorite-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            fetch(`/favorites/toggle/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.classList.toggle('active');
+                    // Обновляем счетчик в шапке
+                    const counter = document.querySelector('.favorites-count');
+                    if (counter) {
+                        counter.textContent = data.count;
+                    }
+                }
+            });
+        });
+    });
+
+    // Обработка кнопки сравнения
+    document.querySelectorAll('.compare-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            fetch(`/compare/toggle/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.classList.toggle('active');
+                    // Обновляем счетчик в шапке
+                    const counter = document.querySelector('.compare-count');
+                    if (counter) {
+                        counter.textContent = data.count;
+                    }
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

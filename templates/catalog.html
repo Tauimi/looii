@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Каталог товаров</h1>
+    </div>
+    
+    <div class="categories-grid">
+        {% for category in categories %}
+        <div class="category-card">
+            <div class="category-icon">
+                <i class="fas 
+                {% if category.name == 'Смартфоны' %}fa-mobile-alt
+                {% elif category.name == 'Ноутбуки' %}fa-laptop
+                {% elif category.name == 'Телевизоры' %}fa-tv
+                {% elif category.name == 'Холодильники' %}fa-snowflake
+                {% elif category.name == 'Стиральные машины' %}fa-tshirt
+                {% else %}fa-box
+                {% endif %}
+                "></i>
+            </div>
+            <div class="category-info">
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description }}</p>
+                <a href="{{ url_for('shop.category', category_id=category.id) }}" class="category-link">Перейти к товарам</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %} 

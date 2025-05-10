@@ -1,0 +1,306 @@
+/* Шапка сайта */
+header {
+    background-color: white;
+    box-shadow: var(--box-shadow);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    max-height: 50px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--dark-color);
+}
+
+.search-form {
+    display: flex;
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+}
+
+.search-form input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+}
+
+.search-form button {
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+}
+
+.cart-icon {
+    margin-left: 15px;
+    position: relative;
+}
+
+.cart-icon span {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--danger-color);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+/* Навигация */
+nav {
+    background-color: var(--dark-color);
+    padding: 10px 0;
+}
+
+nav .container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-menu {
+    list-style: none;
+    display: flex;
+}
+
+.main-menu li {
+    margin-right: 20px;
+}
+
+.main-menu a {
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.main-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.accessibility-controls {
+    display: flex;
+    align-items: center;
+}
+
+.accessibility-controls button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 12px;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+}
+
+.accessibility-controls button i {
+    margin-right: 3px;
+    font-size: 11px;
+}
+
+.accessibility-controls button .button-text {
+    display: inline-block;
+    font-size: 12px;
+}
+
+.accessibility-controls button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Активное состояние кнопок доступности */
+.accessibility-controls button.active {
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Кнопка режима для слабовидящих */
+#increase-font.active {
+    background-color: #ffd700;
+    color: #000;
+}
+
+#increase-font.active i {
+    font-size: 10px;
+}
+
+#dark-theme.active {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+#dark-theme.active i {
+    font-size: 10px;
+}
+
+/* Адаптивные стили для кнопок доступности */
+@media (max-width: 768px) {
+    .accessibility-controls button .button-text {
+        display: none;
+    }
+    
+    .accessibility-controls button i {
+        margin-right: 0;
+        font-size: 16px;
+    }
+    
+    .accessibility-controls button {
+        padding: 2px 6px;
+        margin-left: 5px;
+    }
+}
+
+/* Иконки в навигации */
+nav .fas, 
+nav .far, 
+nav .fab,
+nav .fa {
+    font-size: 10px;
+}
+
+.user-actions .fas,
+.user-actions .far,
+.user-actions .fab,
+.user-actions .fa {
+    font-size: 11px;
+}
+
+.search-form button .fas {
+    font-size: 11px;
+}
+
+/* Стили режима для слабовидящих в шапке сайта */
+body.large-font header, 
+html.large-font header {
+    padding: 20px 0; /* Увеличено с 15px */
+}
+
+body.large-font .logo img, 
+html.large-font .logo img {
+    max-height: 70px; /* Увеличено с 50px */
+    margin-right: 15px; /* Увеличено с 10px */
+}
+
+body.large-font .logo-text, 
+html.large-font .logo-text {
+    font-size: 32px; /* Увеличено с 24px */
+}
+
+body.large-font .search-form, 
+html.large-font .search-form {
+    max-width: 600px; /* Увеличено с 500px */
+    margin: 0 30px; /* Увеличено с 20px */
+}
+
+body.large-font .search-form input, 
+html.large-font .search-form input {
+    padding: 15px 20px; /* Увеличено с 10px 15px */
+    font-size: 16px; /* Добавлено для увеличения размера текста */
+    border-width: 2px; /* Увеличено для лучшей видимости */
+}
+
+body.large-font .search-form button, 
+html.large-font .search-form button {
+    padding: 15px 20px; /* Увеличено с 10px 15px */
+    font-size: 16px; /* Добавлено для увеличения размера текста */
+}
+
+body.large-font .cart-icon, 
+html.large-font .cart-icon {
+    margin-left: 20px; /* Увеличено с 15px */
+}
+
+body.large-font .cart-icon span, 
+html.large-font .cart-icon span {
+    width: 25px; /* Увеличено с 20px */
+    height: 25px; /* Увеличено с 20px */
+    font-size: 14px; /* Увеличено с 12px */
+    top: -8px; /* Изменено для лучшего позиционирования */
+    right: -8px; /* Изменено для лучшего позиционирования */
+}
+
+/* Увеличение навигации */
+body.large-font nav, 
+html.large-font nav {
+    padding: 15px 0; /* Увеличено с 10px */
+}
+
+body.large-font .main-menu li, 
+html.large-font .main-menu li {
+    margin-right: 30px; /* Увеличено с 20px */
+}
+
+body.large-font .main-menu a, 
+html.large-font .main-menu a {
+    padding: 8px 15px; /* Увеличено с 5px 10px */
+    border-radius: 5px; /* Увеличено с 3px */
+    font-size: 18px; /* Добавлено для увеличения размера текста */
+}
+
+/* Увеличение кнопок доступности */
+body.large-font .accessibility-controls button, 
+html.large-font .accessibility-controls button {
+    font-size: 16px; /* Увеличено с 12px */
+    padding: 6px 12px; /* Увеличено с 2px 6px */
+    margin-left: 12px; /* Увеличено с 8px */
+    border-radius: 5px; /* Увеличено с 3px */
+}
+
+body.large-font .accessibility-controls button i, 
+html.large-font .accessibility-controls button i {
+    margin-right: 6px; /* Увеличено с 3px */
+    font-size: 16px; /* Увеличено с 11px */
+}
+
+body.large-font .accessibility-controls button .button-text, 
+html.large-font .accessibility-controls button .button-text {
+    font-size: 16px; /* Увеличено с 12px */
+}
+
+/* Адаптивные стили для кнопок доступности */
+@media (max-width: 768px) {
+    body.large-font .accessibility-controls button i, 
+    html.large-font .accessibility-controls button i {
+        font-size: 20px; /* Увеличено с 16px */
+    }
+    
+    body.large-font .accessibility-controls button, 
+    html.large-font .accessibility-controls button {
+        padding: 8px 10px; /* Увеличено с 2px 6px */
+        margin-left: 8px; /* Увеличено с 5px */
+    }
+} 

@@ -1,0 +1,183 @@
+{% extends 'layout.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common_stock.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/product_page.css') }}">
+<style>
+    .product-specifications {
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: var(--box-shadow);
+    }
+    
+    .specifications-title {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+    }
+    
+    .specifications-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .specifications-table tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+    
+    .specifications-table td {
+        padding: 10px;
+        border: 1px solid #eee;
+    }
+    
+    .specifications-table td:first-child {
+        font-weight: bold;
+        width: 40%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="breadcrumbs">
+        <a href="{{ url_for('shop.home') }}">Главная</a> &raquo;
+        <a href="{{ url_for('shop.catalog') }}">Каталог</a> &raquo;
+        <a href="{{ url_for('shop.category', category_id=product.category_id) }}">{{ product.category.name }}</a> &raquo;
+        <span>{{ product.name }}</span>
+    </div>
+    
+    <div class="product-details">
+        <div class="product-gallery">
+            <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="thumbnail" data-full-image="{{ url_for('static', filename='images/' + product.image) }}">
+        </div>
+        
+        <div class="product-detail-info">
+            <h1 class="product-detail-title">{{ product.name }}</h1>
+            <div class="product-detail-price">{{ product.price }} ₽</div>
+            
+            <div class="product-actions">
+                <div class="favorite-action">
+                    <button type="button" class="favorite-btn {% if product.id in session.get('favorites', []) %}active{% endif %}" 
+                            data-product-id="{{ product.id }}" aria-label="Добавить в избранное" title="Добавить в избранное">
+                        <i class="fas fa-heart"></i>
+                        <span class="favorite-count">{{ session.get('favorites', [])|length }}</span>
+                    </button>
+                </div>
+                
+                <div class="main-actions">
+                    <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="post" class="ajax-add-to-cart" data-product-id="{{ product.id }}">
+                        <div class="quantity-control">
+                            <button type="button" class="quantity-decrease" aria-label="Уменьшить количество" title="Уменьшить количество">-</button>
+                            <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" aria-label="Количество товара" title="Количество товара">
+                            <button type="button" class="quantity-increase" aria-label="Увеличить количество" title="Увеличить количество">+</button>
+                        </div>
+                        
+                        <div class="cart-controls">
+                            <button type="submit" class="add-to-cart-large">В корзину</button>
+                            <div class="cart-quantity-controls" style="display: none;">
+                                <button type="button" class="cart-quantity-decrease" aria-label="Уменьшить количество" title="Уменьшить количество">-</button>
+                                <span class="cart-quantity-value">1</span>
+                                <button type="button" class="cart-quantity-increase" aria-label="Увеличить количество" title="Увеличить количество">+</button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <button type="button" class="compare-btn {% if product.id in session.get('compare', []) %}active{% endif %}" 
+                            data-product-id="{{ product.id }}" aria-label="Добавить к сравнению" title="Добавить к сравнению">
+                        <i class="fas fa-balance-scale"></i>
+                        <span>В сравнение</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="product-description">
+                {{ product.description }}
+            </div>
+            
+            <div class="stock-indicator {% if product.stock > 5 %}in-stock{% elif product.stock > 0 %}low-stock{% else %}out-of-stock{% endif %}">
+                <i class="fas {% if product.stock > 5 %}fa-check-circle{% elif product.stock > 0 %}fa-exclamation-circle{% else %}fa-times-circle{% endif %}"></i>
+                {% if product.stock > 5 %}
+                    <span>В наличии: {{ product.stock }} шт.</span>
+                {% elif product.stock > 0 %}
+                    <span>Внимание! Осталось всего {{ product.stock }} шт.</span>
+                {% else %}
+                    <span>Нет в наличии</span>
+                {% endif %}
+            </div>
+            
+            <div class="product-meta">
+                <div class="product-meta-item">
+                    <strong>Категория:</strong> <a href="{{ url_for('shop.category', category_id=product.category_id) }}">{{ product.category.name }}</a>
+                </div>
+                <div class="product-meta-item">
+                    <strong>Артикул:</strong> {{ product.id }}
+                </div>
+                <div class="product-meta-item">
+                    <strong>Добавлен:</strong> {{ product.date_added.strftime('%d.%m.%Y') }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="related-products">
+        <h2>Похожие товары</h2>
+        <div class="products">
+            {% for related_product in related_products %}
+            <div class="product-card animate-fade-in">
+                <div class="product-image">
+                    <a href="{{ url_for('shop.product', product_id=related_product.id) }}">
+                        <img src="{{ url_for('static', filename='images/' + related_product.image) }}" alt="{{ related_product.name }}" class="thumbnail" data-full-image="{{ url_for('static', filename='images/' + related_product.image) }}">
+                    </a>
+                    
+                    <!-- Индикатор наличия похожих товаров -->
+                    <div class="stock-badge {% if related_product.stock > 5 %}stock-high{% elif related_product.stock > 0 %}stock-low{% else %}stock-none{% endif %}">
+                        {% if related_product.stock > 5 %}
+                            В наличии
+                        {% elif related_product.stock > 0 %}
+                            Осталось {{ related_product.stock }} шт.
+                        {% else %}
+                            Нет в наличии
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-title">
+                        <a href="{{ url_for('shop.product', product_id=related_product.id) }}">{{ related_product.name }}</a>
+                    </div>
+                    <div class="product-price">{{ related_product.price }} ₽</div>
+                    <form action="{{ url_for('cart.add_to_cart', product_id=related_product.id) }}" method="post" class="ajax-add-to-cart" data-product-id="{{ related_product.id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="add-to-cart" {% if related_product.stock <= 0 %}disabled{% endif %}>
+                            {% if related_product.stock > 0 %}
+                                В корзину
+                            {% else %}
+                                Нет в наличии
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    {% if product.specifications %}
+    <div class="product-specifications">
+        <div class="specifications-title">Характеристики</div>
+        <table class="specifications-table">
+            {% for key, value in product.specifications.items() %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/product.js') }}"></script>
+{% endblock %} 

@@ -1,0 +1,16 @@
+/* Главный файл стилей, подключающий все остальные модули */
+
+/* Основные стили */
+@import url('common.css');
+@import url('header.css');
+@import url('footer.css');
+@import url('responsive.css');
+
+/* Элементы интерфейса */
+@import url('products.css');
+@import url('catalog.css');
+@import url('banner.css');
+@import url('forms.css');
+
+/* Значки наличия товаров */
+@import url('common_stock.css'); 

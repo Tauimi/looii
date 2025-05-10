@@ -1,0 +1,128 @@
+/* Подвал */
+footer {
+    background-color: var(--dark-color);
+    color: white;
+    padding: 40px 0 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.footer-column {
+    width: 25%;
+    padding-right: 20px;
+}
+
+.footer-column h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.footer-menu {
+    list-style: none;
+}
+
+.footer-menu li {
+    margin-bottom: 10px;
+}
+
+.footer-menu a {
+    color: #bbb;
+    transition: color 0.3s;
+}
+
+.footer-menu a:hover {
+    color: white;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    text-align: center;
+}
+
+.social-links {
+    display: flex;
+    margin-top: 15px;
+}
+
+.social-links a {
+    display: inline-block;
+    margin-right: 15px;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.social-links a:hover {
+    background-color: var(--primary-color);
+}
+
+/* Стили для режима слабовидящих */
+body.large-font footer,
+html.large-font footer {
+    padding: 60px 0 30px; /* Увеличено с 40px 0 20px */
+}
+
+body.large-font .footer-content,
+html.large-font .footer-content {
+    flex-direction: column; /* Меняем на колонку для лучшей читаемости */
+    margin-bottom: 40px; /* Увеличено с 30px */
+}
+
+body.large-font .footer-column,
+html.large-font .footer-column {
+    width: 100%; /* На всю ширину в режиме слабовидящих */
+    padding-right: 0;
+    margin-bottom: 30px; /* Добавлено отступ между колонками */
+}
+
+body.large-font .footer-column h3,
+html.large-font .footer-column h3 {
+    margin-bottom: 25px; /* Увеличено с 20px */
+    font-size: 24px; /* Увеличено с 18px */
+}
+
+body.large-font .footer-menu li,
+html.large-font .footer-menu li {
+    margin-bottom: 15px; /* Увеличено с 10px */
+}
+
+body.large-font .footer-menu a,
+html.large-font .footer-menu a {
+    color: #ddd; /* Светлее для лучшей контрастности */
+    font-size: 18px; /* Добавлено для увеличения размера текста */
+}
+
+body.large-font .footer-bottom,
+html.large-font .footer-bottom {
+    padding-top: 30px; /* Увеличено с 20px */
+    font-size: 18px; /* Добавлено для увеличения размера текста */
+}
+
+body.large-font .social-links,
+html.large-font .social-links {
+    margin-top: 25px; /* Увеличено с 15px */
+    justify-content: center; /* Центрируем иконки */
+}
+
+body.large-font .social-links a,
+html.large-font .social-links a {
+    margin-right: 25px; /* Увеличено с 15px */
+    width: 48px; /* Увеличено с 36px */
+    height: 48px; /* Увеличено с 36px */
+}
+
+body.large-font .social-links a i,
+html.large-font .social-links a i {
+    font-size: 20px; /* Добавлено для увеличения размера иконок */
+} 

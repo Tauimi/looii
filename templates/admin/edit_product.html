@@ -1,0 +1,151 @@
+{% extends 'admin/layout.html' %}
+
+{% block content %}
+<div class="admin-container">
+    <h1>Редактирование товара</h1>
+    
+    <form method="POST" enctype="multipart/form-data" class="admin-form">
+        <div class="form-group">
+            <label for="name">Название товара</label>
+            <input type="text" id="name" name="name" value="{{ product.name }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <textarea id="description" name="description" rows="4">{{ product.description }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="price">Цена</label>
+            <input type="number" id="price" name="price" value="{{ product.price }}" step="0.01" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="stock">Количество на складе</label>
+            <input type="number" id="stock" name="stock" value="{{ product.stock }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="category_id">Категория</label>
+            <select id="category_id" name="category_id" required>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id == product.category_id %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="image">Изображение</label>
+            <input type="file" id="image" name="image" accept="image/*">
+            {% if product.image %}
+            <div class="current-image">
+                <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="Текущее изображение" style="max-width: 200px;">
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label>Характеристики товара</label>
+            <div id="specifications-container">
+                {% if product.specifications %}
+                    {% for key, value in product.specifications.items() %}
+                    <div class="specification-row">
+                        <input type="text" name="spec_key_{{ loop.index }}" value="{{ key }}" placeholder="Название характеристики">
+                        <input type="text" name="spec_value_{{ loop.index }}" value="{{ value }}" placeholder="Значение">
+                        <button type="button" class="remove-specification" data-key="{{ key }}">Удалить</button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <button type="button" id="add-specification" class="btn-secondary">Добавить характеристику</button>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Сохранить изменения</button>
+            <a href="{{ url_for('admin.products') }}" class="btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('specifications-container');
+    const addButton = document.getElementById('add-specification');
+    let specCount = {{ product.specifications|length if product.specifications else 0 }};
+    
+    addButton.addEventListener('click', function() {
+        specCount++;
+        const row = document.createElement('div');
+        row.className = 'specification-row';
+        row.innerHTML = `
+            <input type="text" name="spec_key_${specCount}" placeholder="Название характеристики">
+            <input type="text" name="spec_value_${specCount}" placeholder="Значение">
+            <button type="button" class="remove-specification">Удалить</button>
+        `;
+        container.appendChild(row);
+    });
+    
+    container.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-specification')) {
+            const row = e.target.closest('.specification-row');
+            const key = e.target.dataset.key;
+            
+            if (key) {
+                // Удаление существующей характеристики через AJAX
+                fetch(`/admin/products/{{ product.id }}/remove_specification`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `key=${encodeURIComponent(key)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        row.remove();
+                    }
+                });
+            } else {
+                // Удаление новой, еще не сохраненной характеристики
+                row.remove();
+            }
+        }
+    });
+});
+</script>
+
+<style>
+.specification-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.specification-row input {
+    flex: 1;
+}
+
+.remove-specification {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.remove-specification:hover {
+    background: #c82333;
+}
+
+#add-specification {
+    margin-top: 10px;
+}
+
+.current-image {
+    margin-top: 10px;
+}
+</style>
+{% endblock %} 

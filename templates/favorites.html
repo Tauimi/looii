@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common_stock.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Избранные товары</h1>
+    </div>
+    
+    {% if favorites %}
+    <div class="products">
+        {% for product in favorites %}
+        <div class="product-card animate-fade-in">
+            <div class="product-image">
+                <a href="{{ url_for('shop.product', product_id=product.id) }}">
+                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="thumbnail" data-full-image="{{ url_for('static', filename='images/' + product.image) }}">
+                </a>
+                
+                <!-- Индикатор наличия товара -->
+                <div class="stock-badge {% if product.stock > 5 %}stock-high{% elif product.stock > 0 %}stock-low{% else %}stock-none{% endif %}">
+                    {% if product.stock > 5 %}
+                        В наличии
+                    {% elif product.stock > 0 %}
+                        Осталось {{ product.stock }} шт.
+                    {% else %}
+                        Нет в наличии
+                    {% endif %}
+                </div>
+            </div>
+            <div class="product-info">
+                <div class="product-title">
+                    <a href="{{ url_for('shop.product', product_id=product.id) }}">{{ product.name }}</a>
+                </div>
+                <div class="product-price">{{ product.price }} ₽</div>
+                <div class="product-actions">
+                    <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="post" class="ajax-add-to-cart" data-product-id="{{ product.id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="add-to-cart" {% if product.stock <= 0 %}disabled{% endif %}>
+                            {% if product.stock > 0 %}
+                                В корзину
+                            {% else %}
+                                Нет в наличии
+                            {% endif %}
+                        </button>
+                    </form>
+                    <button type="button" class="favorite-btn active" data-product-id="{{ product.id }}" aria-label="Удалить из избранного" title="Удалить из избранного">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="fas fa-heart"></i>
+        </div>
+        <h2>В избранном пока ничего нет</h2>
+        <p>Добавляйте понравившиеся товары в избранное, чтобы не потерять их и быстро найти позже.</p>
+        <a href="{{ url_for('shop.catalog') }}" class="btn">Перейти в каталог</a>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/product.js') }}"></script>
+{% endblock %} 

@@ -1,0 +1,45 @@
+/* Рекламный баннер */
+.banner {
+    width: 100%;
+    height: 300px;
+    background-color: var(--primary-color);
+    background-image: linear-gradient(45deg, var(--primary-color), #4a90e2);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-content {
+    text-align: center;
+    z-index: 1;
+    padding: 20px;
+}
+
+.banner h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.banner p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.banner .btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: white;
+    color: var(--primary-color);
+    border-radius: 5px;
+    font-weight: bold;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.banner .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+} 

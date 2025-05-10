@@ -1,0 +1,89 @@
+<!-- Шапка сайта -->
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <a href="{{ url_for('shop.home') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ТехноМаркет Логотип">
+                    <div class="logo-text">ТехноМаркет</div>
+                </a>
+            </div>
+            
+            <form class="search-form" action="{{ url_for('shop.search') }}" method="GET">
+                <input type="text" name="query" placeholder="Поиск товаров...">
+                <button type="submit" title="Поиск" aria-label="Поиск по сайту"><i class="fas fa-search"></i></button>
+            </form>
+            
+            <div class="user-actions">
+                <div id="clock" class="clock">00:00:00</div>
+                <a href="{{ url_for('favorites.index') }}" class="user-action-link" title="Избранное">
+                    <i class="fas fa-heart"></i>
+                    {% if session.get('favorites') %}
+                        <span class="badge">{{ session.get('favorites')|length }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ url_for('compare.index') }}" class="user-action-link" title="Сравнение">
+                    <i class="fas fa-balance-scale"></i>
+                    {% if session.get('compare') %}
+                        <span class="badge">{{ session.get('compare')|length }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ url_for('cart.index') }}" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    {% if session.cart %}
+                        {% set cart_count = 0 %}
+                        {% for item in session.cart %}
+                            {% set cart_count = cart_count + item.quantity %}
+                        {% endfor %}
+                        <span id="cart-count" class="{% if cart_count > 0 %}has-items{% endif %}">{{ cart_count }}</span>
+                    {% else %}
+                        <span id="cart-count">0</span>
+                    {% endif %}
+                </a>
+                {% if session.user_id %}
+                    <a href="{{ url_for('profile.index') }}" class="user-action-link">
+                        <i class="fas fa-user"></i> Профиль
+                    </a>
+                    {% if session.get('username') == 'admin' %}
+                    <a href="{{ url_for('admin_panel') }}" class="user-action-link" title="Административная панель">
+                        <i class="fas fa-cog"></i> Админ панель
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="user-action-link">
+                        <i class="fas fa-sign-out-alt"></i> Выйти
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="user-action-link">
+                        <i class="fas fa-sign-in-alt"></i> Войти
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="user-action-link">
+                        <i class="fas fa-user-plus"></i> Регистрация
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Навигация -->
+<nav>
+    <div class="container">
+        <ul class="main-menu">
+            <li><a href="{{ url_for('shop.home') }}">Главная</a></li>
+            <li><a href="{{ url_for('shop.catalog') }}">Каталог</a></li>
+            <li><a href="{{ url_for('static_pages.about') }}">О компании</a></li>
+            <li><a href="{{ url_for('static_pages.delivery') }}">Доставка и оплата</a></li>
+            <li><a href="{{ url_for('static_pages.contact') }}">Контакты</a></li>
+            <li><a href="{{ url_for('static_pages.sitemap') }}">Карта сайта</a></li>
+        </ul>
+        
+        <div class="accessibility-controls">
+            <button id="increase-font" title="Режим для слабовидящих" aria-label="Включить режим для слабовидящих">
+                <i class="fas fa-glasses"></i> <span class="button-text">Доступность</span>
+            </button>
+            <button id="dark-theme" title="Тёмная тема" aria-label="Включить тёмную тему">
+                <i class="fas fa-moon"></i> <span class="button-text">Тема</span>
+            </button>
+        </div>
+    </div>
+</nav> 
